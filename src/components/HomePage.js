@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import Profile from "./Profile";
+import Dashboard from "./Dashboard";
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth0();
@@ -12,6 +13,7 @@ const HomePage = () => {
       <h1>Application</h1>
       {isAuthenticated && <Profile />}
       {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+      {isAuthenticated && <Dashboard />}
     </div>
   );
 };
