@@ -6,6 +6,9 @@ const Dashboard = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
     const fetchData = async () => {
       try {
         const token = await getAccessTokenWithPopup({
@@ -14,7 +17,6 @@ const Dashboard = () => {
             scope: "read:transactions",
           },
         });
-        console.log("token", token);
         const response = await fetch("http://localhost:8080/v1/transactions", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -26,10 +28,7 @@ const Dashboard = () => {
         console.error(error);
       }
     };
-
-    if (isAuthenticated) {
-      fetchData();
-    }
+    fetchData();
   }, [isAuthenticated, getAccessTokenWithPopup]);
 
   return (
