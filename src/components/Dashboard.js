@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 const Dashboard = () => {
   const { isAuthenticated, getAccessTokenWithPopup } = useAuth0();
   const [data, setData] = useState([]);
+  const [txError, setTxError] = useState();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -22,6 +23,12 @@ const Dashboard = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+        if (!response.ok) {
+          const jsonErr = await response.json();
+          setTxError(jsonErr.message);
+          return;
+        }
+
         const jsonData = await response.json();
         setData(jsonData);
       } catch (error) {
@@ -36,11 +43,14 @@ const Dashboard = () => {
       {isAuthenticated ? (
         <div>
           <h2>Transactions</h2>
-          <ul>
-            {data.map((item) => (
-              <li key={item.id}>{item.id}</li>
-            ))}
-          </ul>
+          {data.length !== 0 && (
+            <ul>
+              {data.map((item) => (
+                <li key={item.id}>{item.id}</li>
+              ))}
+            </ul>
+          )}
+          {txError && <div>{txError}</div>}
         </div>
       ) : (
         <div>Please authenticate to view the data.</div>
